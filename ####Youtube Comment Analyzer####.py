@@ -14,7 +14,7 @@ api_key = 'AIzaSyCdyHxyIjdjNZ3RuYg1yxM0uzHD0AzlUp0'
 youtube = build('youtube', 'v3', developerKey=api_key)
 
 # Retrieve comments from a video
-video_id = '3bT4KSBZsa8'
+video_id = 'Insert Youtube Video ID here'
 comments = ['Test Youtube Analyzer']
 
 # Paginate through the comments

@@ -1,71 +1,72 @@
-####Youtube Comment Analyzer####
+# Read Me for YouTube Comment Analyzer
 
-import nltk
-nltk.download('vader_lexicon')
-from nltk.sentiment import SentimentIntensityAnalyzer
-import pandas as pd
-from googleapiclient.discovery import build
+## Table of Contents
 
+1. [Introduction](#Introduction)
+2. [Project Structure](#Project-Structure)
+3. [Dependencies](#Dependencies)
+4. [Installation Guide](#Installation-Guide)
+5. [Usage](#Usage)
+6. [Data Collection and Preprocessing](#Data-Collection-and-Preprocessing)
+7. [Algorithms and Methods](#Algorithms-and-Methods)
+8. [Output and Metrics](#Output-and-Metrics)
+9. [Contributing](#Contributing)
 
-# Set up the YouTube Data API credentials (API key)
-api_key = 'AIzaSyCdyHxyIjdjNZ3RuYg1yxM0uzHD0AzlUp0'
+## Introduction
+This project is aimed at analyzing the sentiment of YouTube comments using the Natural Language Toolkit (NLTK) in Python. The script fetches comments from a specific YouTube video, analyzes their sentiment, and displays the count of positive and negative comments.
 
-# Create a YouTube API client
-youtube = build('youtube', 'v3', developerKey=api_key)
+## Project Structure
+The code structure is organized into the following segments:
+1. Importing Dependencies
+2. YouTube API Setup
+3. Data Collection
+4. Sentiment Analysis
+5. Data Framing and Output
 
-# Retrieve comments from a video
-video_id = 'Insert Youtube Video ID here'
-comments = ['Test Youtube Analyzer']
+## Dependencies
+* Python 3.x
+* NLTK
+* pandas
+* googleapiclient
 
-# Paginate through the comments
-next_page_token = None
-while True:
-    response = youtube.commentThreads().list(
-        part='snippet',
-        videoId=video_id,
-        maxResults=100,  # Adjust as per your requirement
-        pageToken=next_page_token
-    ).execute()
+## Installation Guide
+1. Clone the repository
+2. Run `pip install -r requirements.txt` to install the necessary packages
+3. Obtain a YouTube Data API key and place it in the `api_key` variable.
 
-    for item in response['items']:
-        comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
-        comments.append(comment)
+## Usage
+Insert the YouTube video ID you wish to analyze in the `video_id` variable, then run the Python file from the command line or IDE.
 
-    next_page_token = response.get('nextPageToken')
+## Data Collection and Preprocessing
 
-    if not next_page_token:
-        break
-        
-# Perform sentiment analysis on the comments
-sia = SentimentIntensityAnalyzer()
+### YouTube API
+The YouTube comments are fetched using YouTube Data API v3. The maximum number of comments fetched per API call is set to 100, which can be adjusted as per your requirement.
 
-positive_count = 0
-negative_count = 0
+### Text Preprocessing
+The NLTK VADER lexicon is used for sentiment analysis which does not require any specific text preprocessing.
 
-comment_sentiments = []
-for comment in comments:
-    sentiment = sia.polarity_scores(comment)
-    if sentiment['compound'] >= 0.05:
-        comment_sentiments.append('Positive')
-        positive_count += 1
-    elif sentiment['compound'] <= -0.05:
-        comment_sentiments.append('Negative')
-        negative_count += 1
-    else:
-        comment_sentiments.append('Neutral')
+## Algorithms and Methods
 
-# Create a DataFrame with comments and their sentiment
-df = pd.DataFrame({'Comment': comments, 'Sentiment': comment_sentiments})
+### Sentiment Analysis
+The project uses the VADER (Valence Aware Dictionary and sEntiment Reasoner) lexicon for sentiment analysis, part of the NLTK library. VADER is particularly suited for sentiment analysis of social media text.
 
-# Display the count of positive and negative comments
-print("Positive Comments:", positive_count)
-print("Negative Comments:", negative_count)
+#### Sentiment Scoring
+* Positive if compound score >= 0.05
+* Negative if compound score <= -0.05
+* Neutral otherwise
 
-# Display the DataFrame
-print(df)
-        
+## Output and Metrics
 
-# Process the comments as per your analysis requirements
-for comment in comments:
-    # Perform analysis or any other actions on each comment
-    print(comment)
+### Data Summary
+The comments along with their sentiment labels are framed into a pandas DataFrame.
+
+### Metrics
+* Count of Positive Comments
+* Count of Negative Comments
+
+## Contributing
+Contributions to improve the code are welcome. Please fork the repository and submit a pull request for any enhancements.
+
+### References
+1. [VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text](http://comp.social.gatech.edu/papers/icwsm14.vader.hutto.pdf)
+2. [YouTube API v3 Documentation](https://developers.google.com/youtube/v3/docs)
